@@ -1,0 +1,13 @@
+{
+  "models": [
+    {
+      "title": "DeepSeek",
+      "provider": "deepseek",
+      "model": "deepseek-chat",
+      "apiKey": "cole-sua-chave-api-aqui"
+    }
+  ],
+  "experimental": {
+    "enablePromptFile": true
+  }
+}

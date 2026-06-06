@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Indique e Ganhe</title>
+    <meta name="description" content="Acesse seu painel de afiliado Retro e acompanhe seus ganhos, cliques e conversões em tempo real.">
+    <meta name="theme-color" content="#000080">
+    <meta property="og:title" content="Indique e Ganhe - Login">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span style="color: #FF0000;">R</span><span style="color: #00AA00;">e</span><span style="color: #0000FF;">t</span><span style="color: #FFFF00;">r</span><span style="color: #FF00FF;">o</span><span style="color: #00FFFF;"> A</span><span style="color: #FF0000;">f</span><span style="color: #00AA00;">i</span><span style="color: #0000FF;">l</span><span style="color: #FFFF00;">i</span><span style="color: #FF00FF;">a</span><span style="color: #00FFFF;">d</span><span style="color: #FF0000;">o</span><span style="color: #00AA00;">s</span>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Início</a>
+                <a href="signup.html" class="nav-link guest-link">Cadastro</a>
+                <a href="login.html" class="nav-link active guest-link">Login</a>
+                <a href="dashboard.html" class="nav-link auth-link">Painel</a>
+                <a href="admin.html" class="nav-link admin-link">Admin</a>
+                <span class="auth-link" style="color:white;font-size:10px;padding:4px 8px;" id="auth-user-name"></span>
+                <button class="btn btn-tiny auth-link" id="auth-logout-btn" style="margin-left:4px;">Sair</button>
+                <button class="btn btn-tiny" id="theme-toggle" onclick="toggleTheme()" style="margin-left:10px;" title="Alternar tema">◐ Tema</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="signup-section">
+            <div class="container">
+                <div class="signup-container">
+                    <div class="signup-form-wrapper">
+                        <h1 class="section-title">Login do Afiliado</h1>
+                        <p class="section-subtitle">Acesse seu painel personalizado</p>
+
+                        <form id="login-form" class="signup-form">
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email*</label>
+                                <div class="form-input-wrapper">
+                                    <input type="email" id="email" name="email"
+                                        placeholder="seu.email@exemplo.com"
+                                        class="form-input" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password" class="form-label">Senha*</label>
+                                <div class="form-input-wrapper">
+                                    <input type="password" id="password" name="password"
+                                        placeholder="Sua senha"
+                                        class="form-input" required>
+                                </div>
+                                <div style="text-align:right;margin-top:5px;">
+                                    <a href="forgot.html" style="font-size:10px;color:var(--color-text-light);">Esqueci minha senha</a>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-large">
+                                Entrar
+                            </button>
+                        </form>
+
+                        <div style="text-align:center;margin-top:20px;font-size:12px;">
+                            <p>Ainda não tem conta? <a href="signup.html">Cadastre-se aqui</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container" style="text-align:center;padding:12px 0;border-top:2px solid #808080;">
+            <a href="termos.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Termos de Uso</a>
+            <a href="privacidade.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Privacidade</a>
+            <span style="color:#808080;font-size:10px;margin:0 8px;">&copy; 2026 Indique e Ganhe</span>
+        </div>
+    </footer>
+
+    <script src="src/storage.js"></script>
+    <script src="src/utils.js"></script>
+    <script src="src/affiliates.js"></script>
+    <script src="src/tracking.js"></script>
+    <script src="src/dashboard.js"></script>
+    <script src="src/main.js"></script>
+    <script src="src/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthUI();
+
+            var loginForm = document.getElementById('login-form');
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var email = document.getElementById('email').value;
+                var password = document.getElementById('password').value;
+                var btn = loginForm.querySelector('button[type="submit"]');
+                btn.disabled = true;
+                btn.textContent = 'Entrando...';
+                try {
+                    await apiLogin(email, password);
+                    window.location.href = 'dashboard.html';
+                } catch (err) {
+                    showToast('Erro: ' + err.message);
+                    btn.disabled = false;
+                    btn.textContent = 'Entrar';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

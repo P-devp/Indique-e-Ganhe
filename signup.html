@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Afiliado - Indique e Ganhe</title>
+    <meta name="description" content="Cadastre-se como afiliado Retro e comece a ganhar comissões indicando amigos para barbearia e lava rápido.">
+    <meta name="theme-color" content="#000080">
+    <meta property="og:title" content="Indique e Ganhe - Cadastro">
+    <meta property="og:description" content="Cadastre-se grátis e ganhe comissões!" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span style="color: #FF0000;">R</span><span style="color: #00AA00;">e</span><span style="color: #0000FF;">t</span><span style="color: #FFFF00;">r</span><span style="color: #FF00FF;">o</span><span style="color: #00FFFF;"> A</span><span style="color: #FF0000;">f</span><span style="color: #00AA00;">i</span><span style="color: #0000FF;">l</span><span style="color: #FFFF00;">i</span><span style="color: #FF00FF;">a</span><span style="color: #00FFFF;">d</span><span style="color: #FF0000;">o</span><span style="color: #00AA00;">s</span>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Início</a>
+                <a href="signup.html" class="nav-link active">Cadastro</a>
+                <a href="dashboard.html" class="nav-link auth-link">Painel</a>
+                <a href="admin.html" class="nav-link admin-link">Admin</a>
+                <a href="login.html" class="nav-link guest-link">Login</a>
+                <span class="auth-link" style="color:white;font-size:10px;padding:4px 8px;" id="auth-user-name"></span>
+                <button class="btn btn-tiny auth-link" id="auth-logout-btn" style="margin-left:4px;">Sair</button>
+                <button class="btn btn-tiny" id="theme-toggle" onclick="toggleTheme()" style="margin-left:10px;" title="Alternar tema">◐ Tema</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="signup-section">
+            <div class="container">
+                <div class="signup-container">
+                    <div id="form-container" class="signup-form-wrapper">
+                        <h1 class="section-title">Cadastre-se como Afiliado</h1>
+                        <p class="section-subtitle">Preencha o formulário abaixo para se cadastrar e começar a ganhar!</p>
+
+                        <form id="signup-form" class="signup-form">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Nome Completo*</label>
+                                <div class="form-input-wrapper">
+                                    <input type="text" id="name" name="name"
+                                        placeholder="Seu nome completo"
+                                        class="form-input" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email*</label>
+                                <div class="form-input-wrapper">
+                                    <input type="email" id="email" name="email"
+                                        placeholder="seu.email@exemplo.com"
+                                        class="form-input" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Telefone*</label>
+                                <div class="form-input-wrapper">
+                                    <input type="tel" id="phone" name="phone"
+                                        placeholder="(11) 9999-9999"
+                                        class="form-input" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password" class="form-label">Criar Senha*</label>
+                                <div class="form-input-wrapper">
+                                    <input type="password" id="password" name="password"
+                                        placeholder="Mínimo 6 caracteres"
+                                        class="form-input" required minlength="6"
+                                        onkeyup="updatePasswordStrength()">
+                                </div>
+                                <div id="password-strength" style="margin-top:5px;height:6px;background:var(--bevel-dark);border:1px inset var(--bevel-darker);overflow:hidden;">
+                                    <div id="password-strength-bar" style="height:100%;width:0%;background:#FF0000;transition:width 0.3s;"></div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;margin-top:3px;">
+                                    <span id="password-strength-text" style="font-size:9px;color:var(--color-text-light);">Digite uma senha</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="service" class="form-label">Qual serviço você deseja indicar?*</label>
+                                <div class="form-input-wrapper">
+                                    <select id="service" name="service" class="form-input" required>
+                                        <option value="">-- Selecione uma opção --</option>
+                                        <option value="barbearia">✂️ Barbearia (15% de comissão)</option>
+                                        <option value="lava-rapido">🚗 Lava Rápido (10% de comissão)</option>
+                                        <option value="ambos">Ambos (variável)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="terms" name="terms" required>
+                                    <span>Concordo com os termos e condições*</span>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-large">
+                                Gerar Código de Afiliado
+                            </button>
+                        </form>
+                    </div>
+
+                    <div id="success-container" class="signup-success hidden">
+                        <div class="success-card">
+                            <div class="success-icon">✓</div>
+                            <h2>Cadastro Realizado com Sucesso!</h2>
+                            <p class="success-message">Seu código de afiliado foi gerado. Compartilhe-o com seus amigos!</p>
+
+                            <div class="affiliate-code-box">
+                                <span class="code-label">Seu Código de Afiliado:</span>
+                                <div class="code-display" id="affiliate-code">RETRO-2026-XXXX</div>
+                                <button type="button" class="btn btn-small" onclick="copyAffiliateCode()">Copiar Código</button>
+                            </div>
+
+                            <div class="success-details">
+                                <p><strong>Nome:</strong> <span id="display-name">-</span></p>
+                                <p><strong>Email:</strong> <span id="display-email">-</span></p>
+                                <p><strong>Serviço:</strong> <span id="display-service">-</span></p>
+                            </div>
+
+                            <div class="construction-stripe">
+                                <span>==== PRÓXIMAS ETAPAS ====</span>
+                            </div>
+
+                            <div class="next-steps">
+                                <p><strong>1.</strong> Copie seu código de afiliado</p>
+                                <p><strong>2.</strong> Compartilhe com amigos e familiares</p>
+                                <p><strong>3.</strong> Acompanhe seus ganhos no dashboard</p>
+                            </div>
+
+                            <div class="success-buttons">
+                                <a href="dashboard.html" class="btn btn-primary">Ver Dashboard</a>
+                                <a href="index.html" class="btn btn-secondary">Voltar ao Início</a>
+                            </div>
+
+                            <button type="button" class="btn btn-ghost btn-small" onclick="resetForm()">
+                                Cadastrar Outro Afiliado
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container" style="text-align:center;padding:12px 0;border-top:2px solid #808080;">
+            <a href="termos.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Termos de Uso</a>
+            <a href="privacidade.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Privacidade</a>
+            <span style="color:#808080;font-size:10px;margin:0 8px;">&copy; 2026 Indique e Ganhe</span>
+        </div>
+    </footer>
+
+    <script src="src/storage.js"></script>
+    <script src="src/utils.js"></script>
+    <script src="src/affiliates.js"></script>
+    <script src="src/tracking.js"></script>
+    <script src="src/dashboard.js"></script>
+    <script src="src/main.js"></script>
+    <script src="src/auth.js"></script>
+    <script>
+        var signupForm = document.getElementById('signup-form');
+
+        signupForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var phone = document.getElementById('phone').value;
+            var password = document.getElementById('password').value;
+            var service = document.getElementById('service').value;
+
+            var btn = signupForm.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = 'Cadastrando...';
+
+            try {
+                var result = await apiRegister(name, email, password, phone, service);
+                var affiliate = result.affiliate;
+
+                document.getElementById('display-name').textContent = name;
+                document.getElementById('display-email').textContent = email;
+                document.getElementById('display-service').textContent = getServiceName(service);
+                document.getElementById('affiliate-code').textContent = affiliate.code;
+
+                document.getElementById('form-container').classList.add('hidden');
+                document.getElementById('success-container').classList.remove('hidden');
+            } catch (err) {
+                showToast('Erro: ' + err.message);
+                btn.disabled = false;
+                btn.textContent = 'Gerar Código de Afiliado';
+            }
+        });
+
+        function copyAffiliateCode() {
+            var code = document.getElementById('affiliate-code').textContent;
+            copyToClipboard(code);
+            showToast('Código copiado para a área de transferência!');
+        }
+
+        function resetForm() {
+            document.getElementById('signup-form').reset();
+            document.getElementById('form-container').classList.remove('hidden');
+            document.getElementById('success-container').classList.add('hidden');
+        }
+
+        function updatePasswordStrength() {
+            var pwd = document.getElementById('password').value;
+            var bar = document.getElementById('password-strength-bar');
+            var text = document.getElementById('password-strength-text');
+            var score = 0;
+            if (pwd.length >= 6) score += 1;
+            if (pwd.length >= 10) score += 1;
+            if (/[A-Z]/.test(pwd)) score += 1;
+            if (/[0-9]/.test(pwd)) score += 1;
+            if (/[^a-zA-Z0-9]/.test(pwd)) score += 1;
+            var pct = (score / 5) * 100;
+            bar.style.width = pct + '%';
+            if (pwd.length === 0) { bar.style.background = '#FF0000'; text.textContent = 'Digite uma senha'; }
+            else if (score <= 1) { bar.style.background = '#FF0000'; text.textContent = 'Fraca'; }
+            else if (score <= 2) { bar.style.background = '#FFFF00'; text.textContent = 'Média'; }
+            else if (score <= 3) { bar.style.background = '#00AA00'; text.textContent = 'Boa'; }
+            else { bar.style.background = '#0000FF'; text.textContent = 'Forte'; }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecionando... - Indique e Ganhe</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .tracking-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tracking-card {
+            background: var(--color-silver);
+            border: 3px outset var(--bevel-light);
+            padding: 40px;
+            text-align: center;
+            box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.8), 5px 5px 0 rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+        .tracking-card .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .tracking-card .stat-number {
+            font-size: 48px;
+            margin: 20px 0;
+        }
+        .loading-bar {
+            width: 100%;
+            height: 20px;
+            border: 3px inset var(--bevel-dark);
+            background: white;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .loading-fill {
+            height: 100%;
+            width: 0%;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--color-blue),
+                var(--color-blue) 10px,
+                var(--color-navy) 10px,
+                var(--color-navy) 20px
+            );
+            animation: loading 1.5s ease-in-out forwards;
+        }
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        .tracking-card .construction-stripe {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <main class="tracking-page">
+        <div class="tracking-card">
+            <div class="logo">
+                <span style="color: #FF0000;">R</span><span style="color: #00AA00;">e</span><span style="color: #0000FF;">t</span><span style="color: #FFFF00;">r</span><span style="color: #FF00FF;">o</span><span style="color: #00FFFF;"> A</span><span style="color: #FF0000;">f</span><span style="color: #00AA00;">i</span><span style="color: #0000FF;">l</span><span style="color: #FFFF00;">i</span><span style="color: #FF00FF;">a</span><span style="color: #00FFFF;">d</span><span style="color: #FF0000;">o</span><span style="color: #00AA00;">s</span>
+            </div>
+
+            <div class="stat-number" id="click-status">=</div>
+
+            <h2 class="section-subtitle" style="font-size: 18px; margin: 20px 0;">
+                Redirecionando...
+            </h2>
+
+            <div class="loading-bar">
+                <div class="loading-fill"></div>
+            </div>
+
+            <div class="construction-stripe">
+                <span>==== OBRIGADO PELA VISITA! ====</span>
+            </div>
+
+            <p style="font-size: 12px; color: var(--color-text-light); margin-top: 20px;">
+                Seu clique foi registrado. Você será redirecionado em instantes.
+            </p>
+        </div>
+    </main>
+
+    <button class="btn btn-tiny no-print" onclick="toggleTheme()" style="position:fixed;top:10px;right:10px;z-index:999;" title="Alternar tema">◐ Tema</button>
+    <footer class="footer">
+        <div class="container" style="text-align:center;padding:12px 0;border-top:2px solid #808080;">
+            <a href="termos.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Termos de Uso</a>
+            <a href="privacidade.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Privacidade</a>
+            <span style="color:#808080;font-size:10px;margin:0 8px;">&copy; 2026 Indique e Ganhe</span>
+        </div>
+    </footer>
+    <script src="src/storage.js"></script>
+    <script src="src/utils.js"></script>
+    <script src="src/affiliates.js"></script>
+    <script src="src/tracking.js"></script>
+    <script src="src/dashboard.js"></script>
+    <script src="src/main.js"></script>
+    <script>
+        (async function() {
+            var ref = getReferralCode();
+            var statusEl = document.getElementById('click-status');
+
+            if (ref) {
+                await recordClick(ref);
+                statusEl.textContent = '\u2713';
+                statusEl.style.color = 'var(--color-green)';
+
+                setTimeout(function() {
+                    window.location.href = 'index.html?ref=' + ref;
+                }, 1800);
+            } else {
+                statusEl.textContent = '?';
+                statusEl.style.color = 'var(--color-red)';
+
+                setTimeout(function() {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+        })();
+    </script>
+</body>
+</html>

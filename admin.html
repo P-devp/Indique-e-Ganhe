@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Indique e Ganhe</title>
+    <meta name="description" content="Painel administrativo do Indique e Ganhe: gerencie saques, metas e afiliados.">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-tabs { display:flex; gap:5px; margin-bottom:25px; flex-wrap:wrap; }
+        .admin-tab { padding:10px 20px; cursor:pointer; font-weight:bold; font-size:12px; background:var(--color-silver); border:3px outset var(--bevel-light); }
+        .admin-tab.active { background:var(--color-blue); color:white; border-style:inset; }
+        .admin-tab:hover { background:var(--color-dark-gray); color:white; }
+        .admin-tab.active:hover { background:var(--color-blue); }
+        .admin-section { display:none; }
+        .admin-section.active { display:block; }
+        .payout-actions { display:flex; gap:5px; }
+        .payout-actions .btn { padding:4px 10px; font-size:9px; }
+        .goal-form { max-width:400px; }
+        .goal-form .form-group { margin-bottom:12px; }
+        .admin-affiliates-table { font-size:10px; }
+        .admin-affiliates-table td, .admin-affiliates-table th { padding:6px 8px; }
+        .badge-pending { color:#CC8800; font-weight:bold; }
+        .badge-approved { color:var(--color-green); font-weight:bold; }
+        .badge-paid { color:var(--color-blue); font-weight:bold; }
+        .badge-rejected { color:var(--color-red); font-weight:bold; }
+        [data-theme="dark"] .admin-tab { background:#2A2A2A; }
+        [data-theme="dark"] .admin-tab.active { background:#000080; }
+        [data-theme="dark"] .admin-tab:hover { background:#555; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span style="color: #FF0000;">R</span><span style="color: #00AA00;">e</span><span style="color: #0000FF;">t</span><span style="color: #FFFF00;">r</span><span style="color: #FF00FF;">o</span><span style="color: #00FFFF;"> A</span><span style="color: #FF0000;">f</span><span style="color: #00AA00;">i</span><span style="color: #0000FF;">l</span><span style="color: #FFFF00;">i</span><span style="color: #FF00FF;">a</span><span style="color: #00FFFF;">d</span><span style="color: #FF0000;">o</span><span style="color: #00AA00;">s</span>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Início</a>
+                <a href="dashboard.html" class="nav-link">Painel</a>
+                <a href="admin.html" class="nav-link active">Admin</a>
+                <span style="color:white;font-size:10px;padding:4px 8px;" id="auth-user-name"></span>
+                <button class="btn btn-tiny" id="auth-logout-btn" style="margin-left:4px;">Sair</button>
+                <button class="btn btn-tiny" id="theme-toggle" onclick="toggleTheme()" style="margin-left:10px;" title="Alternar tema">&#x25D0; Tema</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="dashboard-section">
+            <div class="container">
+                <h1 class="section-title">Painel Administrativo</h1>
+                <p class="section-subtitle">Gerencie saques, metas e afiliados do programa</p>
+
+                <!-- Guest / Non-admin message -->
+                <div id="admin-guest-msg" class="card" style="padding:20px;text-align:center;margin-bottom:30px;display:none;">
+                    <p style="font-size:14px;margin-bottom:15px;">Acesso restrito a administradores.</p>
+                    <a href="login.html" class="btn btn-primary">Fazer Login</a>
+                </div>
+
+                <div id="admin-content" style="display:none;">
+                    <!-- Tabs -->
+                    <div class="admin-tabs">
+                        <div class="admin-tab active" data-tab="payouts" onclick="switchTab('payouts')">&#x1F4B0; Saques</div>
+                        <div class="admin-tab" data-tab="goals" onclick="switchTab('goals')">&#x1F3AF; Metas</div>
+                        <div class="admin-tab" data-tab="affiliates" onclick="switchTab('affiliates')">&#x1F465; Afiliados</div>
+                    </div>
+
+                    <!-- Payouts -->
+                    <div id="tab-payouts" class="admin-section active">
+                        <h2 class="subsection-title">Saques Pendentes</h2>
+                        <div id="payouts-pending" class="table-wrapper">
+                            <p style="padding:20px;text-align:center;">Carregando...</p>
+                        </div>
+                        <h2 class="subsection-title" style="margin-top:30px;">Histórico de Saques</h2>
+                        <div id="payouts-history" class="table-wrapper">
+                            <p style="padding:20px;text-align:center;">Carregando...</p>
+                        </div>
+                    </div>
+
+                    <!-- Goals -->
+                    <div id="tab-goals" class="admin-section">
+                        <h2 class="subsection-title">Definir Metas Mensais</h2>
+                        <div class="card" style="max-width:500px;">
+                            <div class="card-content">
+                                <form id="goal-form" class="goal-form" onsubmit="return setGoals(event)">
+                                    <div class="form-group">
+                                        <label class="form-label">Afiliado*</label>
+                                        <div class="form-input-wrapper">
+                                            <select id="goal-affiliate" class="form-input" required>
+                                                <option value="">-- Selecione --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Mês</label>
+                                        <div class="form-input-wrapper">
+                                            <input type="number" id="goal-month" class="form-input" min="1" max="12" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Ano</label>
+                                        <div class="form-input-wrapper">
+                                            <input type="number" id="goal-year" class="form-input" value="2026" min="2026" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Meta de Cliques</label>
+                                        <div class="form-input-wrapper">
+                                            <input type="number" id="goal-clicks" class="form-input" value="50" min="0">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Meta de Conversões</label>
+                                        <div class="form-input-wrapper">
+                                            <input type="number" id="goal-conversions" class="form-input" value="10" min="0">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Meta de Ganhos (R$)</label>
+                                        <div class="form-input-wrapper">
+                                            <input type="number" id="goal-earnings" class="form-input" value="200" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Salvar Metas</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Affiliates -->
+                    <div id="tab-affiliates" class="admin-section">
+                        <h2 class="subsection-title">Gerenciar Afiliados</h2>
+                        <div class="affiliates-toolbar">
+                            <div class="form-input-wrapper" style="display:inline-flex;flex:1;max-width:300px;">
+                                <input type="text" id="admin-aff-search" placeholder="Buscar..." class="form-input" style="border:none;background:transparent;" onkeyup="filterAdminAffiliates()">
+                            </div>
+                        </div>
+                        <div id="admin-affiliates-list" class="table-wrapper">
+                            <p style="padding:20px;text-align:center;">Carregando...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container" style="text-align:center;padding:12px 0;border-top:2px solid #808080;">
+            <a href="termos.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Termos de Uso</a>
+            <a href="privacidade.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Privacidade</a>
+            <span style="color:#808080;font-size:10px;margin:0 8px;">&copy; 2026 Indique e Ganhe</span>
+        </div>
+    </footer>
+
+    <script src="src/storage.js"></script>
+    <script src="src/utils.js"></script>
+    <script src="src/affiliates.js"></script>
+    <script src="src/tracking.js"></script>
+    <script src="src/dashboard.js"></script>
+    <script src="src/main.js"></script>
+    <script src="src/auth.js"></script>
+    <script>
+        var _adminAffiliates = [];
+
+        function switchTab(tab) {
+            document.querySelectorAll('.admin-tab').forEach(function(t) { t.classList.remove('active'); });
+            document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.remove('active'); });
+            document.querySelector('.admin-tab[data-tab="' + tab + '"]').classList.add('active');
+            document.getElementById('tab-' + tab).classList.add('active');
+        }
+
+        async function checkAdminAccess() {
+            var auth = getAuthUser();
+            if (!auth || !auth.token) {
+                document.getElementById('admin-guest-msg').style.display = 'block';
+                return false;
+            }
+            // Verify token is still valid and user is admin
+            var data = await apiGetMe();
+            if (!data || data.user.role !== 'admin') {
+                document.getElementById('admin-guest-msg').style.display = 'block';
+                document.getElementById('admin-guest-msg').innerHTML = '<p style="font-size:14px;margin-bottom:15px;">Voc&ecirc; n&atilde;o tem permiss&atilde;o de administrador.</p><a href="dashboard.html" class="btn btn-primary">Ir para o Painel</a>';
+                return false;
+            }
+            saveAuth(getAuthToken(), data.affiliate, data.user);
+            document.getElementById('admin-content').style.display = 'block';
+            return true;
+        }
+
+        // ── Payouts ──
+        async function loadPayouts() {
+            var token = getAuthToken();
+            try {
+                var res = await fetch('/api/payouts?status=pending', { headers: { 'Authorization': 'Bearer ' + token } });
+                var pendings = await res.json();
+                var html = '<table class="retro-table admin-affiliates-table"><thead><tr><th>ID</th><th>Afiliado</th><th>Valor</th><th>Data</th><th>Ações</th></tr></thead><tbody>';
+                if (pendings.length === 0) {
+                    html += '<tr><td colspan="5" style="text-align:center;padding:20px;">Nenhum saque pendente</td></tr>';
+                } else {
+                    pendings.forEach(function(p) {
+                        html += '<tr><td>#' + p.id + '</td><td>' + (p.affiliate_code || '--') + '</td><td><strong>R$ ' + p.amount.toFixed(2).replace('.', ',') + '</strong></td><td>' + (p.requested_at || '').split(' ')[0] + '</td>' +
+                            '<td class="payout-actions">' +
+                            '<button class="btn btn-small btn-success" onclick="updatePayout(' + p.id + ',\'approved\')">Aprovar</button>' +
+                            '<button class="btn btn-small btn-danger" onclick="updatePayout(' + p.id + ',\'rejected\')">Rejeitar</button>' +
+                            '</td></tr>';
+                    });
+                }
+                html += '</tbody></table>';
+                document.getElementById('payouts-pending').innerHTML = html;
+            } catch (e) {
+                document.getElementById('payouts-pending').innerHTML = '<p style="padding:20px;text-align:center;color:red;">Erro ao carregar saques</p>';
+            }
+
+            // Load history (all statuses)
+            try {
+                var res2 = await fetch('/api/payouts', { headers: { 'Authorization': 'Bearer ' + token } });
+                var all = await res2.json();
+                var html2 = '<table class="retro-table admin-affiliates-table"><thead><tr><th>ID</th><th>Afiliado</th><th>Valor</th><th>Status</th><th>Data</th></tr></thead><tbody>';
+                if (all.length === 0) {
+                    html2 += '<tr><td colspan="5" style="text-align:center;padding:20px;">Nenhum saque registrado</td></tr>';
+                } else {
+                    all.forEach(function(p) {
+                        var cls = 'badge-' + p.status;
+                        html2 += '<tr><td>#' + p.id + '</td><td>' + (p.affiliate_code || '--') + '</td><td><strong>R$ ' + p.amount.toFixed(2).replace('.', ',') + '</strong></td><td class="' + cls + '">' + p.status + '</td><td>' + (p.requested_at || '').split(' ')[0] + '</td></tr>';
+                    });
+                }
+                html2 += '</tbody></table>';
+                document.getElementById('payouts-history').innerHTML = html2;
+            } catch (e) {
+                document.getElementById('payouts-history').innerHTML = '<p style="padding:20px;text-align:center;color:red;">Erro ao carregar histórico</p>';
+            }
+        }
+
+        async function updatePayout(id, status) {
+            var token = getAuthToken();
+            try {
+                var res = await fetch('/api/payouts/' + id, {
+                    method: 'PUT',
+                    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: status })
+                });
+                if (res.ok) {
+                    showToast('Saque #' + id + ' ' + (status === 'approved' ? 'aprovado' : 'rejeitado') + '!');
+                    await loadPayouts();
+                } else {
+                    var err = await res.json();
+                    showToast('Erro: ' + (err.error || 'desconhecido'));
+                }
+            } catch (e) {
+                showToast('Erro ao atualizar saque');
+            }
+        }
+
+        // ── Goals ──
+        async function loadGoalAffiliates() {
+            var affiliates = await getAffiliates();
+            var sel = document.getElementById('goal-affiliate');
+            sel.innerHTML = '<option value="">-- Selecione --</option>';
+            affiliates.forEach(function(a) {
+                sel.innerHTML += '<option value="' + a.code + '">' + a.name + ' (' + a.code + ')</option>';
+            });
+        }
+
+        async function setGoals(e) {
+            e.preventDefault();
+            var token = getAuthToken();
+            var code = document.getElementById('goal-affiliate').value;
+            if (!code) { showToast('Selecione um afiliado'); return false; }
+            var data = {
+                month: parseInt(document.getElementById('goal-month').value),
+                year: parseInt(document.getElementById('goal-year').value),
+                clicks: parseInt(document.getElementById('goal-clicks').value) || 0,
+                conversions: parseInt(document.getElementById('goal-conversions').value) || 0,
+                earnings: parseFloat(document.getElementById('goal-earnings').value) || 0
+            };
+            try {
+                var res = await fetch('/api/goals/' + encodeURIComponent(code), {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    showToast('Metas salvas para ' + code + '!');
+                } else {
+                    var err = await res.json();
+                    showToast('Erro: ' + (err.error || 'desconhecido'));
+                }
+            } catch (e) {
+                showToast('Erro ao salvar metas');
+            }
+            return false;
+        }
+
+        // ── Affiliates Management ──
+        async function loadAdminAffiliates() {
+            var affiliates = await getAffiliates();
+            _adminAffiliates = affiliates;
+            renderAdminAffiliates(affiliates);
+        }
+
+        function renderAdminAffiliates(list) {
+            var container = document.getElementById('admin-affiliates-list');
+            if (list.length === 0) {
+                container.innerHTML = '<p style="padding:20px;text-align:center;">Nenhum afiliado encontrado</p>';
+                return;
+            }
+            var html = '<table class="retro-table admin-affiliates-table"><thead><tr><th>Nome</th><th>Email</th><th>Serviço</th><th>Cliques</th><th>Conv.</th><th>Ganhos</th><th>Saldo</th><th>Nível</th><th>Ações</th></tr></thead><tbody>';
+            list.forEach(function(a) {
+                var safeName = (a.name || '').replace(/[<>&"']/g, function(c) { return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]; });
+                html += '<tr><td>' + safeName + '</td><td>' + a.email + '</td><td>' + a.service + '</td><td>' + (a.clicks || 0) + '</td><td>' + (a.conversions || 0) + '</td><td>R$ ' + (a.earnings || 0).toFixed(2).replace('.', ',') + '</td><td><span id="bal-' + a.code + '">R$ ' + (a.balance || 0).toFixed(2).replace('.', ',') + '</span></td><td><span id="lvl-' + a.code + '">' + (a.level || 'bronze') + '</span></td>' +
+                    '<td>' +
+                    '<button class="btn btn-tiny" onclick="adminEditAffiliate(\'' + a.code + '\')" style="margin-right:3px;">Editar</button>' +
+                    '<button class="btn btn-tiny btn-danger" onclick="adminDeleteAffiliate(\'' + a.code + '\')">Excluir</button>' +
+                    '</td></tr>';
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        async function adminEditAffiliate(code) {
+            var token = getAuthToken();
+            var bal = prompt('Novo saldo (R$):');
+            if (bal === null) return;
+            bal = parseFloat(bal.replace(',', '.'));
+            if (isNaN(bal)) { showToast('Valor inválido'); return; }
+            var lvl = prompt('Novo nível (bronze/prata/ouro/diamante):');
+            if (lvl === null) return;
+            lvl = lvl.toLowerCase().trim();
+            if (!['bronze','prata','ouro','diamante'].includes(lvl)) { showToast('Nível inválido'); return; }
+            try {
+                var res = await fetch('/api/admin/affiliates/' + encodeURIComponent(code), {
+                    method: 'PUT',
+                    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ balance: bal, level: lvl })
+                });
+                if (res.ok) {
+                    showToast('Afiliado ' + code + ' atualizado!');
+                    await loadAdminAffiliates();
+                } else {
+                    var err = await res.json();
+                    showToast('Erro: ' + (err.error || 'desconhecido'));
+                }
+            } catch (e) {
+                showToast('Erro ao atualizar');
+            }
+        }
+
+        function filterAdminAffiliates() {
+            var q = (document.getElementById('admin-aff-search').value || '').toLowerCase();
+            var filtered = _adminAffiliates.filter(function(a) {
+                return (a.name || '').toLowerCase().includes(q) || (a.email || '').toLowerCase().includes(q) || (a.code || '').toLowerCase().includes(q);
+            });
+            renderAdminAffiliates(filtered);
+        }
+
+        async function adminDeleteAffiliate(code) {
+            if (!confirm('Excluir afiliado ' + code + '? Esta ação não pode ser desfeita.')) return;
+            try {
+                await deleteAffiliate(code);
+                showToast('Afiliado ' + code + ' excluído!');
+                await loadAdminAffiliates();
+            } catch (e) {
+                showToast('Erro ao excluir');
+            }
+        }
+
+        // ── Init ──
+        document.addEventListener('DOMContentLoaded', async function() {
+            updateAuthUI();
+            var now = new Date();
+            document.getElementById('goal-month').value = now.getMonth() + 1;
+            document.getElementById('goal-year').value = now.getFullYear();
+            var ok = await checkAdminAccess();
+            if (ok) {
+                await Promise.all([
+                    loadPayouts(),
+                    loadGoalAffiliates(),
+                    loadAdminAffiliates()
+                ]);
+            }
+        });
+    </script>
+</body>
+</html>

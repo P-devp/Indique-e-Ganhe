@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Indique e Ganhe</title>
+    <meta name="description" content="Painel de controle do afiliado Retro: acompanhe cliques, conversões, ganhos, níveis e metas mensais.">
+    <meta name="theme-color" content="#000080">
+    <meta property="og:title" content="Indique e Ganhe - Dashboard">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span style="color: #FF0000;">R</span><span style="color: #00AA00;">e</span><span style="color: #0000FF;">t</span><span style="color: #FFFF00;">r</span><span style="color: #FF00FF;">o</span><span style="color: #00FFFF;"> A</span><span style="color: #FF0000;">f</span><span style="color: #00AA00;">i</span><span style="color: #0000FF;">l</span><span style="color: #FFFF00;">i</span><span style="color: #FF00FF;">a</span><span style="color: #00FFFF;">d</span><span style="color: #FF0000;">o</span><span style="color: #00AA00;">s</span>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Início</a>
+                <a href="signup.html" class="nav-link guest-link">Cadastro</a>
+                <a href="login.html" class="nav-link guest-link">Login</a>
+                <a href="dashboard.html" class="nav-link active auth-link">Painel</a>
+                <a href="admin.html" class="nav-link admin-link">Admin</a>
+                <span class="auth-link" style="color:white;font-size:10px;padding:4px 8px;" id="auth-user-name"></span>
+                <button class="btn btn-tiny auth-link" id="auth-logout-btn" style="margin-left:4px;">Sair</button>
+                <button class="btn btn-tiny" id="theme-toggle" onclick="toggleTheme()" style="margin-left:10px;" title="Alternar tema">◐ Tema</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="dashboard-section">
+            <div class="container">
+                <h1 class="section-title">Dashboard de Afiliados</h1>
+                <p class="section-subtitle">Acompanhe seu desempenho em tempo real</p>
+
+                <!-- Affiliate Greeting -->
+                <div id="affiliate-greeting" class="greeting-card hidden">
+                    <div class="greeting-info">
+                        <h2 id="greeting-name">Bem-vindo!</h2>
+                        <p>Código: <strong id="greeting-code">--</strong></p>
+                    </div>
+                    <div class="greeting-level" id="greeting-level">
+                        <span class="level-badge level-bronze">Bronze</span>
+                        <div class="level-progress-container">
+                            <div class="level-progress-bar" id="level-progress-bar" style="width:0%"></div>
+                        </div>
+                        <span class="level-next" id="level-next-text">Próximo: Prata</span>
+                    </div>
+                </div>
+
+                <!-- Guest message -->
+                <div id="guest-message" class="card" style="padding:20px;text-align:center;margin-bottom:30px;">
+                    <p style="font-size:14px;margin-bottom:15px;">Faça login para ver seu painel personalizado com níveis e metas!</p>
+                    <a href="login.html" class="btn btn-primary">Fazer Login</a>
+                    <a href="signup.html" class="btn btn-secondary">Cadastrar-se</a>
+                </div>
+
+                <!-- Stats Section -->
+                <section class="dashboard-stats">
+                    <h2 class="subsection-title">Seus Números</h2>
+                    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                        <div class="stat-box">
+                            <div class="stat-number" id="dashboard-affiliates">0</div>
+                            <div class="stat-label">Afiliados</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="dashboard-clicks">0</div>
+                            <div class="stat-label">Cliques Gerados</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="dashboard-conversions">0</div>
+                            <div class="stat-label">Conversões</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="dashboard-earnings">R$ 0,00</div>
+                            <div class="stat-label">Ganhos Totais</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Level & Goals Section -->
+                <section class="dashboard-levels" id="dashboard-levels">
+                    <h2 class="subsection-title">Seu Nível</h2>
+                    <div class="levels-grid" id="levels-grid">
+                        <!-- Generated by JS -->
+                    </div>
+
+                    <h2 class="subsection-title" style="margin-top:30px;">Metas Mensais</h2>
+                    <div class="goals-grid" id="goals-grid">
+                        <div class="goal-card">
+                            <h4>Cliques</h4>
+                            <div class="goal-number" id="goal-clicks">0 / 0</div>
+                            <div class="goal-bar-container">
+                                <div class="goal-bar" id="goal-bar-clicks" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div class="goal-card">
+                            <h4>Conversões</h4>
+                            <div class="goal-number" id="goal-conversions">0 / 0</div>
+                            <div class="goal-bar-container">
+                                <div class="goal-bar" id="goal-bar-conversions" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div class="goal-card">
+                            <h4>Ganhos (R$)</h4>
+                            <div class="goal-number" id="goal-earnings">R$ 0 / R$ 0</div>
+                            <div class="goal-bar-container">
+                                <div class="goal-bar" id="goal-bar-earnings" style="width:0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Finance Section -->
+                <section class="dashboard-finance" id="dashboard-finance" style="display:none;">
+                    <h2 class="subsection-title">Financeiro</h2>
+                    <div class="finance-grid">
+                        <div class="card">
+                            <div class="card-title-bar"><span>💰 Saldo Disponível</span></div>
+                            <div class="card-content" style="text-align:center;">
+                                <div class="stat-number" id="finance-balance" style="color:var(--color-green);">R$ 0,00</div>
+                                <div style="margin-top:15px;">
+                                    <form id="withdraw-form" onsubmit="return requestWithdraw(event)">
+                                        <div class="form-input-wrapper" style="display:inline-flex;align-items:center;gap:8px;padding:4px 8px;">
+                                            <span style="font-weight:bold;">R$</span>
+                                            <input type="number" id="withdraw-amount" min="10" step="0.01" placeholder="Valor mínimo R$10" class="form-input" style="width:120px;border:none;background:transparent;" required>
+                                            <button type="submit" class="btn btn-small btn-primary">Solicitar Saque</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-title-bar"><span>📋 Histórico de Saques</span></div>
+                            <div class="card-content" style="max-height:200px;overflow-y:auto;">
+                                <div id="payout-history">
+                                    <p style="font-size:11px;color:var(--color-text-light);">Nenhum saque solicitado</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Charts Section -->
+                <section class="dashboard-charts">
+                    <h2 class="subsection-title">Visualização de Dados</h2>
+                    <div class="charts-grid">
+                        <div class="chart-box">
+                            <canvas id="chart-top" height="200"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <canvas id="chart-distrib" height="200"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Affiliates List -->
+                <section class="dashboard-affiliates">
+                    <h2 class="subsection-title">Lista de Afiliados</h2>
+                    <div class="affiliates-toolbar">
+                        <div class="form-input-wrapper" style="display:inline-flex;align-items:center;flex:1;max-width:300px;">
+                            <input type="text" id="affiliate-search" placeholder="Buscar por nome, email ou código..." class="form-input" style="border:none;background:transparent;" onkeyup="filterAffiliates()">
+                        </div>
+                        <select id="service-filter" class="btn" style="padding:6px 10px;" onchange="filterAffiliates()">
+                            <option value="">Todos os serviços</option>
+                            <option value="barbearia">Barbearia</option>
+                            <option value="lava-rapido">Lava Rápido</option>
+                            <option value="ambos">Ambos</option>
+                        </select>
+                        <button class="btn btn-small btn-success" onclick="exportCSV()">Exportar CSV</button>
+                        <button class="btn btn-small" onclick="exportAffiliatesData()">Exportar JSON</button>
+                    </div>
+                    <div id="affiliates-list" class="affiliates-table-wrapper">
+                        <p style="text-align: center; padding: 20px; color: #666;">Nenhum afiliado cadastrado ainda. <a href="signup.html">Cadastre-se agora</a></p>
+                    </div>
+                </section>
+
+                <!-- Leaderboard -->
+                <section class="dashboard-leaderboard">
+                    <h2 class="subsection-title">Top 10 Afiliados</h2>
+                    <div id="leaderboard" class="table-wrapper">
+                        <table class="retro-table">
+                            <thead>
+                                <tr>
+                                    <th>Posição</th>
+                                    <th>Nome</th>
+                                    <th>Código</th>
+                                    <th>Nível</th>
+                                    <th>Cliques</th>
+                                    <th>Conversões</th>
+                                    <th>Ganhos</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-body">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 20px;">Nenhum dado disponível</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Services Info -->
+                <section class="dashboard-services">
+                    <h2 class="subsection-title">Informações de Comissão</h2>
+                    <div class="services-grid">
+                        <div class="card">
+                            <div class="card-title-bar"><span>✂️ BARBEARIA</span></div>
+                            <div class="card-content">
+                                <div class="info-item">
+                                    <span class="info-label">Comissão por Indicação:</span>
+                                    <span class="info-value">15%</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Ticket Médio:</span>
+                                    <span class="info-value">R$ 80,00</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Ganho Médio por Indicação:</span>
+                                    <span class="info-value">R$ 12,00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-title-bar"><span>🚗 LAVA RÁPIDO</span></div>
+                            <div class="card-content">
+                                <div class="info-item">
+                                    <span class="info-label">Comissão por Indicação:</span>
+                                    <span class="info-value">10%</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Ticket Médio:</span>
+                                    <span class="info-value">R$ 50,00</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Ganho Médio por Indicação:</span>
+                                    <span class="info-value">R$ 5,00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Resources Section -->
+                <section class="dashboard-resources">
+                    <h2 class="subsection-title">Materiais de Divulgação</h2>
+                    <div class="resources-grid">
+                        <div class="resource-card">
+                            <h4>Mensagens Prontas</h4>
+                            <p>Use nossas mensagens pré-prontas para WhatsApp e redes sociais</p>
+                            <button class="btn btn-small btn-primary" onclick="showResources('mensagens')">Ver Mensagens</button>
+                        </div>
+                        <div class="resource-card">
+                            <h4>Banners</h4>
+                            <p>Download de banners para compartilhar em seus canais</p>
+                            <button class="btn btn-small btn-primary" onclick="showResources('banners')">Baixar Banners</button>
+                        </div>
+                        <div class="resource-card">
+                            <h4>Link Direto</h4>
+                            <p>Link de fácil compartilhamento com seu código incluído</p>
+                            <div id="share-link-area">
+                                <button class="btn btn-small btn-primary" onclick="copyShareLink()" id="share-link-btn">Copiar Link</button>
+                            </div>
+                        </div>
+                        <div class="resource-card">
+                            <h4>Relatório PDF</h4>
+                            <p>Gere um relatório completo com todos os dados para imprimir</p>
+                            <button class="btn btn-small btn-primary" onclick="showResources('relatorio')">Gerar Relatório</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cta-section">
+                    <div class="construction-stripe">
+                        <span>==== COMPARTILHE SEU CÓDIGO ====</span>
+                    </div>
+                    <h2 class="cta-title">Comece a Indicar Agora!</h2>
+                    <p class="cta-subtitle">Cada amigo que você indicar = comissão recorrente todo mês</p>
+                    <a href="signup.html" class="btn btn-large" id="cta-main-btn">Cadastrar Novo Código</a>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container" style="text-align:center;padding:12px 0;border-top:2px solid #808080;">
+            <a href="termos.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Termos de Uso</a>
+            <a href="privacidade.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Privacidade</a>
+            <span style="color:#808080;font-size:10px;margin:0 8px;">&copy; 2026 Indique e Ganhe</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <script src="src/storage.js"></script>
+    <script src="src/utils.js"></script>
+    <script src="src/affiliates.js"></script>
+    <script src="src/tracking.js"></script>
+    <script src="src/dashboard.js"></script>
+    <script src="src/main.js"></script>
+    <script src="src/auth.js"></script>
+    <script>
+        var chartTop = null;
+        var chartDistrib = null;
+
+        // ── Levels display ──
+        async function loadLevels() {
+            var auth = getAuthUser();
+            if (!auth || !auth.affiliate) return;
+            var code = auth.affiliate.code;
+            try {
+                var res = await fetch('/api/levels/' + encodeURIComponent(code));
+                var data = await res.json();
+                renderLevels(data);
+            } catch (e) {}
+        }
+
+        function renderLevels(levelData) {
+            var grid = document.getElementById('levels-grid');
+            if (!grid) return;
+            var html = '';
+            var levels = levelData.levels || [];
+            levels.forEach(function(level) {
+                var unlocked = level.unlocked;
+                html += '<div class="level-item ' + (unlocked ? 'level-unlocked' : 'level-locked') + '">';
+                html += '<div class="level-icon level-' + level.name + '">' + getLevelEmoji(level.name) + '</div>';
+                html += '<div class="level-name">' + capitalize(level.name) + '</div>';
+                html += '<div class="level-threshold">R$ ' + level.threshold + '+</div>';
+                html += '<div class="level-bonus">+' + (level.bonus * 100) + '%</div>';
+                if (unlocked) {
+                    html += '<div class="level-check">✓</div>';
+                }
+                html += '</div>';
+            });
+            grid.innerHTML = html;
+
+            // Update greeting level info
+            if (levelData.next) {
+                document.getElementById('level-progress-bar').style.width = levelData.next.progress + '%';
+                document.getElementById('level-next-text').textContent = 'Próximo: ' + capitalize(levelData.next.name) + ' (R$ ' + levelData.next.threshold + ')';
+            } else {
+                document.getElementById('level-progress-bar').style.width = '100%';
+                document.getElementById('level-next-text').textContent = 'Nível máximo atingido!';
+            }
+        }
+
+        function getLevelEmoji(levelName) {
+            var map = { 'bronze': '🥉', 'prata': '🥈', 'ouro': '🥇', 'diamante': '💎' };
+            return map[levelName] || '🏅';
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // ── Goals display ──
+        async function loadGoals() {
+            var auth = getAuthUser();
+            if (!auth || !auth.affiliate) return;
+            var code = auth.affiliate.code;
+            try {
+                var res = await fetch('/api/goals/' + encodeURIComponent(code) + '/progress');
+                var data = await res.json();
+                if (data && data.clicks) {
+                    updateGoal('clicks', data.clicks.current, data.clicks.target, data.clicks.progress);
+                    updateGoal('conversions', data.conversions.current, data.conversions.target, data.conversions.progress);
+                    updateGoal('earnings', data.earnings.current, data.earnings.target, data.earnings.progress);
+                }
+            } catch (e) {}
+        }
+
+        function updateGoal(type, current, target, progress) {
+            var numEl = document.getElementById('goal-' + type);
+            var barEl = document.getElementById('goal-bar-' + type);
+            if (!numEl || !barEl) return;
+            if (type === 'earnings') {
+                numEl.textContent = 'R$ ' + current.toFixed(2).replace('.', ',') + ' / R$ ' + target.toFixed(2).replace('.', ',');
+            } else {
+                numEl.textContent = current + ' / ' + target;
+            }
+            barEl.style.width = Math.min(100, progress) + '%';
+            if (progress >= 100) {
+                barEl.style.backgroundColor = '#00AA00';
+            }
+        }
+
+        // ── Personalized portal ──
+        async function loadPersonalPortal() {
+            var auth = getAuthUser();
+            var greetingEl = document.getElementById('affiliate-greeting');
+            var guestEl = document.getElementById('guest-message');
+
+            if (auth && auth.affiliate) {
+                greetingEl.classList.remove('hidden');
+                guestEl.style.display = 'none';
+                document.getElementById('greeting-name').textContent = 'Bem-vindo, ' + auth.affiliate.name + '!';
+                document.getElementById('greeting-code').textContent = auth.affiliate.code;
+
+                var levelBadge = document.querySelector('#greeting-level .level-badge');
+                if (auth.affiliate.level) {
+                    levelBadge.className = 'level-badge level-' + auth.affiliate.level;
+                    levelBadge.textContent = capitalize(auth.affiliate.level);
+                }
+
+                // Show affiliate's own link
+                var shareArea = document.getElementById('share-link-area');
+                if (shareArea) {
+                    var link = generateReferralLink(auth.affiliate.code);
+                    shareArea.innerHTML = '<p style="font-size:10px;word-break:break-all;margin-bottom:8px;">' + link + '</p>' +
+                        '<button class="btn btn-small btn-primary" onclick="copyShareLink()">Copiar Link</button>';
+                }
+
+                // Update CTA button for logged-in users
+                var ctaBtn = document.getElementById('cta-main-btn');
+                if (ctaBtn) {
+                    ctaBtn.textContent = 'Copiar Link de Indicação';
+                    ctaBtn.href = '#';
+                    ctaBtn.onclick = function(e) {
+                        e.preventDefault();
+                        copyShareLink();
+                    };
+                }
+
+                // Level info
+                await loadLevels();
+                // Goals
+                await loadGoals();
+            } else {
+                greetingEl.classList.add('hidden');
+                guestEl.style.display = 'block';
+            }
+        }
+
+        // ── Charts ──
+        async function renderCharts() {
+            var affiliates = await getAffiliates();
+
+            var sorted = affiliates.slice().sort(function(a, b) {
+                return (b.earnings || 0) - (a.earnings || 0);
+            }).slice(0, 5);
+
+            var labels = sorted.map(function(a) { return a.name.split(' ')[0]; });
+            var earnings = sorted.map(function(a) { return a.earnings || 0; });
+            var clicks = sorted.map(function(a) { return a.clicks || 0; });
+
+            if (chartTop) chartTop.destroy();
+            var ctx1 = document.getElementById('chart-top');
+            if (ctx1) {
+                chartTop = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Ganhos (R$)', data: earnings, backgroundColor: 'rgba(0, 0, 255, 0.7)', borderColor: '#0000FF', borderWidth: 2 },
+                            { label: 'Cliques', data: clicks, backgroundColor: 'rgba(255, 255, 0, 0.7)', borderColor: '#FFFF00', borderWidth: 2 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { title: { display: true, text: 'Top 5 por Ganhos', font: { size: 14 } }, legend: { position: 'bottom' } },
+                        scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.1)' } }, x: { grid: { display: false } } }
+                    }
+                });
+            }
+
+            var counts = { barbearia: 0, 'lava-rapido': 0, ambos: 0 };
+            affiliates.forEach(function(a) {
+                if (counts[a.service] !== undefined) counts[a.service]++;
+            });
+
+            var serviceLabels = ['Barbearia', 'Lava Rápido', 'Ambos'];
+            var serviceData = [counts.barbearia, counts['lava-rapido'], counts.ambos];
+            var serviceColors = ['rgba(0, 170, 0, 0.8)', 'rgba(0, 0, 255, 0.8)', 'rgba(255, 255, 0, 0.8)'];
+
+            if (chartDistrib) chartDistrib.destroy();
+            var ctx2 = document.getElementById('chart-distrib');
+            if (ctx2) {
+                chartDistrib = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: serviceLabels,
+                        datasets: [{ data: serviceData, backgroundColor: serviceColors, borderColor: '#C0C0C0', borderWidth: 2 }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { title: { display: true, text: 'Distribuição por Serviço', font: { size: 14 } }, legend: { position: 'bottom' } }
+                    }
+                });
+            }
+        }
+
+        // Override copyShareLink to use logged-in affiliate
+        async function copyShareLink() {
+            var auth = getAuthUser();
+            var code = auth && auth.affiliate ? auth.affiliate.code : null;
+            if (!code) {
+                var affiliates = await getAffiliates();
+                if (affiliates.length === 0) {
+                    showToast('Você precisa estar cadastrado para compartilhar um link.');
+                    return;
+                }
+                code = affiliates[0].code;
+            }
+            var link = generateReferralLink(code);
+            copyToClipboard(link);
+            showToast('Link copiado: ' + link);
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            updateAuthUI();
+            await loadDashboard();
+            await renderCharts();
+        });
+        // ── Finance ──
+        async function loadFinance() {
+            var auth = getAuthUser();
+            var section = document.getElementById('dashboard-finance');
+            if (!auth || !auth.affiliate) {
+                if (section) section.style.display = 'none';
+                return;
+            }
+            section.style.display = '';
+            var bal = auth.affiliate.balance || 0;
+            document.getElementById('finance-balance').textContent = 'R$ ' + bal.toFixed(2).replace('.', ',');
+
+            // Load payout history
+            var token = getAuthToken();
+            try {
+                var res = await fetch('/api/payouts', { headers: { 'Authorization': 'Bearer ' + token } });
+                var payouts = await res.json();
+                var html = '';
+                if (payouts.length === 0) {
+                    html = '<p style="font-size:11px;color:var(--color-text-light);">Nenhum saque solicitado</p>';
+                } else {
+                    payouts.forEach(function(p) {
+                        var statusClass = p.status === 'paid' || p.status === 'approved' ? 'label-success' : (p.status === 'rejected' ? 'label-danger' : 'label-warning');
+                        html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bevel-dark);font-size:11px;">' +
+                            '<span><strong>R$ ' + p.amount.toFixed(2).replace('.', ',') + '</strong></span>' +
+                            '<span class="' + statusClass + '" style="padding:2px 6px;font-size:9px;border:1px outset var(--bevel-light);">' + p.status + '</span>' +
+                            '<span style="color:var(--color-text-light);">' + (p.requested_at || '').split(' ')[0] + '</span>' +
+                            '</div>';
+                    });
+                }
+                document.getElementById('payout-history').innerHTML = html;
+            } catch (e) {}
+        }
+
+        window.requestWithdraw = async function(e) {
+            e.preventDefault();
+            var amount = parseFloat(document.getElementById('withdraw-amount').value);
+            if (!amount || amount < 10) {
+                showToast('Valor mínimo para saque: R$ 10,00');
+                return false;
+            }
+            var token = getAuthToken();
+            if (!token) { showToast('Faça login primeiro'); return false; }
+            try {
+                var res = await fetch('/api/payouts', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: amount })
+                });
+                var data = await res.json();
+                if (!res.ok) {
+                    showToast('Erro: ' + (data.error || 'erro desconhecido'));
+                } else {
+                    showToast('Saque de R$ ' + amount.toFixed(2).replace('.', ',') + ' solicitado!');
+                    document.getElementById('withdraw-amount').value = '';
+                    await loadFinance();
+                    await updateAuthUser();
+                }
+            } catch (e) {
+                showToast('Erro ao solicitar saque');
+            }
+            return false;
+        };
+
+        async function updateAuthUser() {
+            var data = await apiGetMe();
+            if (data) {
+                var auth = getAuthUser();
+                if (auth) {
+                    saveAuth(getAuthToken(), data.affiliate, data.user);
+                }
+            }
+        }
+
+        // ── Search & Filter ──
+        var _allAffiliates = [];
+
+        async function filterAffiliates() {
+            var query = (document.getElementById('affiliate-search').value || '').toLowerCase();
+            var service = document.getElementById('service-filter').value;
+            var filtered = _allAffiliates.filter(function(a) {
+                var matchName = a.name.toLowerCase().includes(query);
+                var matchEmail = a.email.toLowerCase().includes(query);
+                var matchCode = a.code.toLowerCase().includes(query);
+                var matchService = !service || a.service === service || (a.service === 'ambos' && service === '');
+                return (matchName || matchEmail || matchCode) && matchService;
+            });
+            loadAffiliatesList(filtered);
+        }
+
+        loadDashboard = async function() {
+            var affiliates = await getAffiliates();
+            _allAffiliates = affiliates;
+            var totalClicks = 0, totalConversions = 0, totalEarnings = 0;
+            affiliates.forEach(function(a) {
+                totalClicks += a.clicks || 0;
+                totalConversions += a.conversions || 0;
+                totalEarnings += a.earnings || 0;
+            });
+            setText('dashboard-affiliates', affiliates.length);
+            setText('dashboard-clicks', totalClicks);
+            setText('dashboard-conversions', totalConversions);
+            setText('dashboard-earnings', formatCurrency(totalEarnings));
+            loadAffiliatesList(affiliates);
+            loadLeaderboard(affiliates);
+            await loadPersonalPortal();
+            await loadFinance();
+        };
+
+        // ── Export CSV ──
+        window.exportCSV = async function() {
+            try {
+                var res = await fetch('/api/export/csv');
+                var blob = await res.blob();
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'afiliados-' + new Date().toISOString().split('T')[0] + '.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('CSV exportado com sucesso!');
+            } catch (e) {
+                // Fallback: generate from local data
+                var affiliates = await getAffiliates();
+                var csv = '\uFEFFNome,Email,C\u00f3digo,Servi\u00e7o,Data,Cliques,Convers\u00f5es,Ganhos,N\u00edvel\n';
+                affiliates.forEach(function(a) {
+                    csv += '"' + a.name + '","' + a.email + '","' + a.code + '","' + a.service + '","' + a.registeredDate + '",' + (a.clicks||0) + ',' + (a.conversions||0) + ',' + (a.earnings||0) + ',' + (a.level||'bronze') + '\n';
+                });
+                var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'afiliados-' + new Date().toISOString().split('T')[0] + '.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('CSV exportado!');
+            }
+        };
+    </script>
+</body>
+</html>

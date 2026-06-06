@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indique e Ganhe - Programa de Afiliados Retrô | Ganhe Comissões</title>
+    <meta name="description" content="Programa de afiliados Retro: indique amigos para barbearia e lava rápido e ganhe comissões de até 15%! Cadastre-se grátis.">
+    <meta name="keywords" content="afiliados, programa de afiliados, comissão, barbearia, lava rápido, renda extra, retro">
+    <meta name="theme-color" content="#000080">
+    <meta property="og:title" content="Indique e Ganhe - Ganhe Comissões Indicando Amigos">
+    <meta property="og:description" content="Programa de afiliados com tema retrô anos 90. Indique e ganhe!" />
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span style="color: #FF0000;">R</span><span style="color: #00AA00;">e</span><span style="color: #0000FF;">t</span><span style="color: #FFFF00;">r</span><span style="color: #FF00FF;">o</span><span style="color: #00FFFF;"> A</span><span style="color: #FF0000;">f</span><span style="color: #00AA00;">i</span><span style="color: #0000FF;">l</span><span style="color: #FFFF00;">i</span><span style="color: #FF00FF;">a</span><span style="color: #00FFFF;">d</span><span style="color: #FF0000;">o</span><span style="color: #00AA00;">s</span>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link active">Início</a>
+                <a href="signup.html" class="nav-link guest-link">Cadastro</a>
+                <a href="login.html" class="nav-link guest-link">Login</a>
+                <a href="dashboard.html" class="nav-link auth-link">Painel</a>
+                <a href="admin.html" class="nav-link admin-link">Admin</a>
+                <span class="auth-link" style="color:white;font-size:10px;padding:4px 8px;" id="auth-user-name"></span>
+                <button class="btn btn-tiny auth-link" id="auth-logout-btn" style="margin-left:4px;">Sair</button>
+                <button class="btn btn-tiny" id="theme-toggle" onclick="toggleTheme()" style="margin-left:10px;" title="Alternar tema">◐ Tema</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1 class="hero-title">Ganhe Comissões com Nossas Soluções</h1>
+                <p class="hero-subtitle">Indique amigos para BARBEARIA e LAVA RÁPIDO e ganhe comissões mensais!</p>
+                <div class="hero-buttons">
+                    <a href="signup.html" class="btn btn-primary">Começar Agora</a>
+                    <a href="#servicos" class="btn btn-secondary">Saiba Mais</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="servicos" class="services">
+            <div class="container">
+                <h2 class="section-title">Nossos Serviços</h2>
+                <div class="services-grid">
+                    <!-- Barbearia Card -->
+                    <div class="card">
+                        <div class="card-title-bar">
+                            <span>✂️ BARBEARIA</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="service-description">Indique novos clientes para nossa barbearia</p>
+                            <div class="commission-box">
+                                <span class="commission-label">Comissão por Indicação:</span>
+                                <span class="commission-value">15%</span>
+                            </div>
+                            <a href="signup.html" class="btn btn-small btn-primary">Cadastrar Agora</a>
+                        </div>
+                    </div>
+
+                    <!-- Lava Rápido Card -->
+                    <div class="card">
+                        <div class="card-title-bar">
+                            <span>🚗 LAVA RÁPIDO</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="service-description">Indique seus amigos para nosso lava rápido</p>
+                            <div class="commission-box">
+                                <span class="commission-label">Comissão por Indicação:</span>
+                                <span class="commission-value">10%</span>
+                            </div>
+                            <a href="signup.html" class="btn btn-small btn-primary">Cadastrar Agora</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits Section -->
+        <section class="benefits">
+            <div class="container">
+                <h2 class="section-title">Por Que Se Juntar?</h2>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">💰</div>
+                        <h3>Ganhos Mensais</h3>
+                        <p>Receba comissões automáticas de cada indicação bem-sucedida</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">📊</div>
+                        <h3>Dashboard em Tempo Real</h3>
+                        <p>Acompanhe seus ganhos, cliques e conversões em tempo real</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🎁</div>
+                        <h3>Bônus Especiais</h3>
+                        <p>Ganhe bônus quando atingir metas mensais</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">📱</div>
+                        <h3>Suporte Total</h3>
+                        <p>Nossa equipe está sempre pronta para ajudar seu progresso</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🔐</div>
+                        <h3>Seguro e Confiável</h3>
+                        <p>Dados criptografados e pagamentos garantidos</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">⭐</div>
+                        <h3>Sem Limites</h3>
+                        <p>Quanto mais você indicar, mais você ganha!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-number" id="total-affiliates">0</div>
+                        <div class="stat-label">Afiliados Ativos</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="total-clicks">0</div>
+                        <div class="stat-label">Cliques Totais</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="total-conversions">0</div>
+                        <div class="stat-label">Conversões</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="total-earnings">R$ 0</div>
+                        <div class="stat-label">Ganhos Totais</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="construction-stripe">
+                    <span>==== COMECE AGORA ====</span>
+                </div>
+                <h2 class="cta-title">Pronto para Começar a Ganhar?</h2>
+                <p class="cta-subtitle">Cadastre-se em menos de 2 minutos e comece a indicar amigos!</p>
+                <a href="signup.html" class="btn btn-large">Cadastrar Gratuitamente</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container" style="text-align:center;padding:12px 0;border-top:2px solid #808080;">
+            <a href="termos.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Termos de Uso</a>
+            <a href="privacidade.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Privacidade</a>
+            <span style="color:#808080;font-size:10px;margin:0 8px;">&copy; 2026 Indique e Ganhe</span>
+        </div>
+    </footer>
+
+    <script src="src/storage.js"></script>
+    <script src="src/utils.js"></script>
+    <script src="src/affiliates.js"></script>
+    <script src="src/tracking.js"></script>
+    <script src="src/dashboard.js"></script>
+    <script src="src/main.js"></script>
+    <script src="src/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthUI();
+
+            // ── Process referral from URL ──
+            var ref = getReferralCode();
+            if (ref) {
+                localStorage.setItem('lastReferrer', ref);
+                var banner = document.createElement('div');
+                banner.style.cssText = 'background:repeating-linear-gradient(45deg,#FFFF00,#FFFF00 10px,#FF0000 10px,#FF0000 20px);padding:12px;text-align:center;font-weight:bold;font-size:14px;border:3px outset var(--bevel-light);margin-bottom:20px;';
+                banner.innerHTML = '&#9733; VOC&Ecirc; FOI INDICADO POR UM AMIGO! &#9733; Aproveite nossas ofertas especiais!';
+                var hero = document.querySelector('.hero');
+                if (hero) hero.parentNode.insertBefore(banner, hero);
+            }
+
+            // ── Conversion trigger ──
+            var convertBtn = document.createElement('div');
+            convertBtn.style.cssText = 'text-align:center;margin:30px 0;';
+            convertBtn.innerHTML = '<button class="btn btn-large btn-primary" onclick="openConversionModal()">&#10003; J&Aacute; COMPREI / USEI O SERVI&Ccedil;O!</button>' +
+                '<p style="font-size:10px;color:var(--color-text-light);margin-top:8px;">Clique aqui se voc&ecirc; foi indicado e j&aacute; contratou nosso servi&ccedil;o</p>';
+            var cta = document.querySelector('.cta-section');
+            if (cta) cta.parentNode.insertBefore(convertBtn, cta);
+        });
+
+        function openConversionModal() {
+            var ref = localStorage.getItem('lastReferrer');
+            if (!ref) {
+                showToast('Nenhuma indica&ccedil;&atilde;o encontrada. Voc&ecirc; precisa acessar por um link de indica&ccedil;&atilde;o.');
+                return;
+            }
+            var overlay = document.createElement('div');
+            overlay.id = 'conversion-modal';
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;';
+            overlay.innerHTML = '<div style="background:var(--color-silver);border:3px outset var(--bevel-light);padding:30px;max-width:400px;width:90%;box-shadow:5px 5px 0 rgba(0,0,0,0.3);text-align:center;">' +
+                '<h2 style="margin-bottom:15px;font-size:18px;">Confirme Sua Compra</h2>' +
+                '<p style="font-size:12px;margin-bottom:20px;">Informe o valor do ticket para registrarmos sua convers&atilde;o:</p>' +
+                '<div class="form-input-wrapper" style="margin-bottom:15px;display:inline-block;">' +
+                '<input type="number" id="conv-ticket" class="form-input" style="width:150px;text-align:center;" step="0.01" min="1" placeholder="Valor (ex: 80)" value="80">' +
+                '</div>' +
+                '<div style="display:flex;gap:10px;justify-content:center;">' +
+                '<button class="btn btn-primary" onclick="submitConversion()">Confirmar</button>' +
+                '<button class="btn" onclick="closeConversionModal()">Cancelar</button>' +
+                '</div>' +
+                '</div>';
+            document.body.appendChild(overlay);
+        }
+
+        function closeConversionModal() {
+            var m = document.getElementById('conversion-modal');
+            if (m) document.body.removeChild(m);
+        }
+
+        async function submitConversion() {
+            var ref = localStorage.getItem('lastReferrer');
+            var ticket = parseFloat(document.getElementById('conv-ticket').value) || 50;
+            try {
+                await recordConversion(ref, ticket);
+                showToast('Compra registrada com sucesso! Obrigado por usar nosso servi&ccedil;o!');
+                closeConversionModal();
+            } catch (e) {
+                showToast('Erro ao registrar: ' + e.message);
+            }
+        }
+    </script>
+</body>
+</html>
