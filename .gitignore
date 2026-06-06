@@ -29,3 +29,6 @@ instance/
 
 # Docker
 .dockerignore
+
+# OpenCode local config
+config.json
