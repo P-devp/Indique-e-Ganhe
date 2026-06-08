@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Sitemap: https://indiqueeganhe.com.br/sitemap.xml
+
+# Disallow admin pages from search
+Disallow: /admin.html
+Disallow: /dashboard.html
+Disallow: /reset-password.html
+Disallow: /forgot.html
