@@ -1,5 +1,5 @@
 @echo off
-REM Database backup script for Retro Afiliados (Windows)
+REM Database backup script for Indique e Ganhe (Windows)
 REM Usage: scripts\backup_db.bat [backup_dir]
 
 setlocal enabledelayedexpansion

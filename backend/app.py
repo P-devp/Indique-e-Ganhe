@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 # ── Configuration ────────────────────────────────────────────
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'retro-dev-key-change-in-production')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'indiqueeganhe-dev-key-change-in-production')
 app.config['MAX_LOGIN_ATTEMPTS'] = int(os.environ.get('MAX_LOGIN_ATTEMPTS', 5))
 app.config['RATE_LIMIT_WINDOW'] = int(os.environ.get('RATE_LIMIT_WINDOW', 60))
 app.config['MIN_PAYOUT'] = float(os.environ.get('MIN_PAYOUT', 10))
@@ -29,7 +29,7 @@ app.config['SMTP_HOST'] = os.environ.get('SMTP_HOST', '')
 app.config['SMTP_PORT'] = int(os.environ.get('SMTP_PORT', 587))
 app.config['SMTP_USER'] = os.environ.get('SMTP_USER', '')
 app.config['SMTP_PASS'] = os.environ.get('SMTP_PASS', '')
-app.config['SMTP_FROM'] = os.environ.get('SMTP_FROM', 'noreply@retroafiliados.com')
+app.config['SMTP_FROM'] = os.environ.get('SMTP_FROM', 'noreply@indiqueeganhe.com.br')
 app.config['CONVERSION_WEBHOOK'] = os.environ.get('CONVERSION_WEBHOOK', '')
 
 db = Database()
@@ -80,7 +80,7 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-if app.config['SECRET_KEY'] in ('retro-dev-key-change-in-production', 'change-this-to-a-random-secret-key', ''):
+if app.config['SECRET_KEY'] in ('indiqueeganhe-dev-key-change-in-production', 'change-this-to-a-random-secret-key', ''):
     log.warning("SECRET_KEY padrão! Gere uma segura com: python -c \"import secrets; print(secrets.token_hex(32))\"")
 
 # ── Rate Limiter ─────────────────────────────────────────────

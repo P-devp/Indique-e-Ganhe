@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Indique e Ganhe</title>
-    <meta name="description" content="Acesse seu painel de afiliado Retro e acompanhe seus ganhos, cliques e conversões em tempo real.">
+    <meta name="description" content="Acesse seu painel de afiliado e acompanhe seus ganhos, cliques e conversões em tempo real.">
     <meta name="theme-color" content="#000080">
     <meta property="og:title" content="Indique e Ganhe - Login">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header class="header">
@@ -80,6 +81,7 @@
         </div>
     </footer>
 
+    <script>if (typeof twemoji !== 'undefined') { twemoji.parse(document.body, { folder: 'svg', ext: '.svg' }); }</script>
     <script src="src/storage.js"></script>
     <script src="src/utils.js"></script>
     <script src="src/affiliates.js"></script>

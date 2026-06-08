@@ -7,7 +7,7 @@ from backend.app import app
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     print('=' * 50)
-    print('  RETRO AFILIADOS - Servidor rodando!')
+    print('  INDIQUE E GANHE - Servidor rodando!')
     print('=' * 50)
     print(f'  Acesse: http://localhost:{port}')
     print('  Pressione CTRL+C para parar')

@@ -236,7 +236,7 @@ class TestFrontendServing:
     def test_index_served(self, client):
         rv = client.get('/')
         assert rv.status_code == 200
-        assert b'Retro' in rv.data
+        assert b'Indique e Ganhe' in rv.data
 
     def test_css_served(self, client):
         rv = client.get('/styles.css')

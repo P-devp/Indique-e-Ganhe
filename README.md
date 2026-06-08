@@ -59,7 +59,7 @@ Copie `.env.example` para `.env` e preencha:
 | `SMTP_PORT` | `587` | Porta SMTP |
 | `SMTP_USER` | — | Usuário SMTP |
 | `SMTP_PASS` | — | Senha SMTP |
-| `SMTP_FROM` | `noreply@retroafiliados.com` | Email remetente |
+| `SMTP_FROM` | `noreply@indiqueeganhe.com.br` | Email remetente |
 | `CONVERSION_WEBHOOK` | — | URL de webhook para conversões |
 | `DISABLE_SEED` | `1` | Desabilita rota /api/seed |
 | `PUBLIC_AFFILIATES` | `1` | Lista pública oculta email/telefone/saldo |

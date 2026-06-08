@@ -1,4 +1,4 @@
-retroafiliados.com www.retroafiliados.com {
+indiqueeganhe.com.br www.indiqueeganhe.com.br {
     reverse_proxy 127.0.0.1:5000
 
     header /static/* Cache-Control "public, immutable"
@@ -11,6 +11,6 @@ retroafiliados.com www.retroafiliados.com {
     encode gzip
 
     log {
-        output file /var/log/caddy/retroafiliados.log
+        output file /var/log/caddy/indiqueeganhe.log
     }
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Database backup script for Retro Afiliados
+# Database backup script for Indique e Ganhe
 # Usage: ./scripts/backup_db.sh [backup_dir]
 # Default: backups/ in project root
 

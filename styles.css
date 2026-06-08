@@ -1,5 +1,5 @@
 /* ================================================
-   RETRO AFILIADOS - 1990s DESIGN SYSTEM
+   INDIQUE E GANHE - 1990s DESIGN SYSTEM
    ================================================ */
 
 /* ============ COLORS ============ */
@@ -144,7 +144,7 @@ html {
 }
 
 body {
-    font-family: 'MS Sans Serif', 'Arial', sans-serif;
+    font-family: 'MS Sans Serif', 'Arial', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
     background-color: var(--color-bg);
     color: var(--color-text);
     line-height: 1.6;
@@ -1303,4 +1303,13 @@ body {
 
 @media (max-width: 480px) {
     .levels-grid { grid-template-columns: 1fr; }
+}
+
+/* Emoji styling */
+img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 .05em 0 .1em;
+    vertical-align: -0.1em;
+    display: inline-block;
 }

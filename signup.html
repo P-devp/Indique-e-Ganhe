@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Afiliado - Indique e Ganhe</title>
-    <meta name="description" content="Cadastre-se como afiliado Retro e comece a ganhar comissões indicando amigos para barbearia e lava rápido.">
+    <meta name="description" content="Cadastre-se como afiliado e comece a ganhar comissões indicando amigos para barbearia e lava rápido.">
     <meta name="theme-color" content="#000080">
     <meta property="og:title" content="Indique e Ganhe - Cadastro">
     <meta property="og:description" content="Cadastre-se grátis e ganhe comissões!" />
     <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header class="header">
@@ -157,6 +158,7 @@
         </div>
     </footer>
 
+    <script>if (typeof twemoji !== 'undefined') { twemoji.parse(document.body, { folder: 'svg', ext: '.svg' }); }</script>
     <script src="src/storage.js"></script>
     <script src="src/utils.js"></script>
     <script src="src/affiliates.js"></script>

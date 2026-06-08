@@ -6,6 +6,7 @@
     <title>Admin - Indique e Ganhe</title>
     <meta name="description" content="Painel administrativo do Indique e Ganhe: gerencie saques, metas e afiliados.">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
     <style>
         .admin-tabs { display:flex; gap:5px; margin-bottom:25px; flex-wrap:wrap; }
         .admin-tab { padding:10px 20px; cursor:pointer; font-weight:bold; font-size:12px; background:var(--color-silver); border:3px outset var(--bevel-light); }
@@ -153,6 +154,7 @@
         </div>
     </footer>
 
+    <script>if (typeof twemoji !== 'undefined') { twemoji.parse(document.body, { folder: 'svg', ext: '.svg' }); }</script>
     <script src="src/storage.js"></script>
     <script src="src/utils.js"></script>
     <script src="src/affiliates.js"></script>
