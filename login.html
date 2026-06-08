@@ -4,22 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Indique e Ganhe</title>
+    <meta property="og:title" content="Indique e Ganhe">
+    <meta property="og:description" content="Programa de afiliados: indique amigos e ganhe comissões mensais!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://indiqueeganhe.com.br">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Indique e Ganhe">
+    <meta name="twitter:description" content="Programa de afiliados: indique amigos e ganhe comissões mensais!">
+    <link rel="manifest" href="/manifest.json">
     <meta name="description" content="Acesse seu painel de afiliado e acompanhe seus ganhos, cliques e conversões em tempo real.">
     <meta name="theme-color" content="#000080">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>▲</text></svg>">
     <meta property="og:title" content="Indique e Ganhe - Login">
     <link rel="stylesheet" href="styles.css">
     <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <header class="header">
+    <a href="#main-content" class="skip-link">Pular para conteúdo principal</a>
+    <header class="header" role="banner">
         <div class="container">
             <div class="logo">
-                <span style="color: #FF0000;">R</span><span style="color: #00AA00;">e</span><span style="color: #0000FF;">t</span><span style="color: #FFFF00;">r</span><span style="color: #FF00FF;">o</span><span style="color: #00FFFF;"> A</span><span style="color: #FF0000;">f</span><span style="color: #00AA00;">i</span><span style="color: #0000FF;">l</span><span style="color: #FFFF00;">i</span><span style="color: #FF00FF;">a</span><span style="color: #00FFFF;">d</span><span style="color: #FF0000;">o</span><span style="color: #00AA00;">s</span>
+                <span class="logo-icon">▲</span>
+                <span class="logo-text">Indique <span class="logo-accent">e</span> Ganhe</span>
             </div>
-            <nav class="nav">
+            <button class="nav-toggle" aria-label="Abrir menu" aria-expanded="false" onclick="toggleNav(this)">☰</button>
+            <button id="dark-toggle" aria-label="Alternar modo escuro">🌙</button>
+            <nav class="nav" role="navigation">
                 <a href="index.html" class="nav-link">Início</a>
                 <a href="signup.html" class="nav-link guest-link">Cadastro</a>
-                <a href="login.html" class="nav-link active guest-link">Login</a>
+                <a href="login.html" class="nav-link active guest-link" aria-current="page">Login</a>
                 <a href="dashboard.html" class="nav-link auth-link">Painel</a>
                 <a href="admin.html" class="nav-link admin-link">Admin</a>
                 <span class="auth-link" style="color:white;font-size:10px;padding:4px 8px;" id="auth-user-name"></span>
@@ -29,7 +43,7 @@
         </div>
     </header>
 
-    <main class="main">
+    <main class="main" id="main-content" role="main">
         <section class="signup-section">
             <div class="container">
                 <div class="signup-container">
@@ -73,7 +87,7 @@
         </section>
     </main>
 
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="container" style="text-align:center;padding:12px 0;border-top:2px solid #808080;">
             <a href="termos.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Termos de Uso</a>
             <a href="privacidade.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Privacidade</a>
@@ -111,6 +125,11 @@
                 }
             });
         });
+    </script>
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(function() {});
+    }
     </script>
 </body>
 </html>

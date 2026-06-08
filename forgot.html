@@ -5,25 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar Senha - Indique e Ganhe</title>
     <meta name="description" content="Recupere sua senha do programa de afiliados.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>▲</text></svg>">
     <link rel="stylesheet" href="styles.css">
     <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <header class="header">
+    <a href="#main-content" class="skip-link">Pular para conteúdo principal</a>
+    <header class="header" role="banner">
         <div class="container">
             <div class="logo">
-                <span style="color: #FF0000;">R</span><span style="color: #00AA00;">e</span><span style="color: #0000FF;">t</span><span style="color: #FFFF00;">r</span><span style="color: #FF00FF;">o</span><span style="color: #00FFFF;"> A</span><span style="color: #FF0000;">f</span><span style="color: #00AA00;">i</span><span style="color: #0000FF;">l</span><span style="color: #FFFF00;">i</span><span style="color: #FF00FF;">a</span><span style="color: #00FFFF;">d</span><span style="color: #FF0000;">o</span><span style="color: #00AA00;">s</span>
+                <span class="logo-icon">▲</span>
+                <span class="logo-text">Indique <span class="logo-accent">e</span> Ganhe</span>
             </div>
-            <nav class="nav">
+            <button class="nav-toggle" aria-label="Abrir menu" aria-expanded="false" onclick="toggleNav(this)">☰</button>
+            <button id="dark-toggle" aria-label="Alternar modo escuro">🌙</button>
+            <nav class="nav" role="navigation">
                 <a href="index.html" class="nav-link">Início</a>
                 <a href="signup.html" class="nav-link">Cadastro</a>
-                <a href="login.html" class="nav-link active">Login</a>
+                <a href="login.html" class="nav-link active" aria-current="page">Login</a>
                 <button class="btn btn-tiny" id="theme-toggle" onclick="toggleTheme()" style="margin-left:10px;" title="Alternar tema">&#x25D0; Tema</button>
             </nav>
         </div>
     </header>
 
-    <main class="main">
+    <main class="main" id="main-content" role="main">
         <section class="signup-section">
             <div class="container">
                 <div class="signup-container">
@@ -64,7 +69,7 @@
         </section>
     </main>
 
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="container" style="text-align:center;padding:12px 0;border-top:2px solid #808080;">
             <a href="termos.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Termos de Uso</a>
             <a href="privacidade.html" style="color:#FFFF00;font-size:10px;margin:0 8px;">Privacidade</a>
@@ -104,6 +109,11 @@
                 btn.textContent = 'Enviar Link de Recuperação';
             }
         });
+    </script>
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(function() {});
+    }
     </script>
 </body>
 </html>

@@ -142,3 +142,23 @@ async function filterAffiliatesByService(service) {
         return a.service === service || a.service === 'ambos';
     });
 }
+
+// ── Search / Filter ──────────────────────────────────────────
+function setupSearch(inputId, tableId) {
+    var input = document.getElementById(inputId);
+    var table = document.getElementById(tableId);
+    if (!input || !table) return;
+    var tbody = table.querySelector('tbody');
+    if (!tbody) return;
+    input.addEventListener('input', function() {
+        var q = input.value.toLowerCase();
+        var rows = tbody.querySelectorAll('tr');
+        rows.forEach(function(row) {
+            var match = false;
+            row.querySelectorAll('td').forEach(function(td) {
+                if (td.textContent.toLowerCase().includes(q)) match = true;
+            });
+            row.style.display = match ? '' : 'none';
+        });
+    });
+}

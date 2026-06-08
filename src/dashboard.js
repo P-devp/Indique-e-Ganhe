@@ -33,6 +33,8 @@ async function updateGlobalStats() {
 }
 
 async function loadDashboard() {
+    showSkeleton('stats-grid', 'cards');
+    showSkeleton('goals-grid', 'cards');
     var affiliates = await getAffiliates();
     var totalClicks = 0, totalConversions = 0, totalEarnings = 0;
 
@@ -41,6 +43,11 @@ async function loadDashboard() {
         totalConversions += a.conversions || 0;
         totalEarnings += a.earnings || 0;
     });
+
+    var statsEl = document.getElementById('stats-grid');
+    if (statsEl && statsEl.querySelector('.skeleton')) statsEl.innerHTML = '';
+    var goalsEl = document.getElementById('goals-grid');
+    if (goalsEl && goalsEl.querySelector('.skeleton')) goalsEl.innerHTML = '';
 
     setText('dashboard-affiliates', affiliates.length);
     setText('dashboard-clicks', totalClicks);

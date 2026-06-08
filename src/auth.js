@@ -56,6 +56,7 @@ async function apiLogin(email, password) {
     }
     var data = await res.json();
     saveAuth(data.token, data.affiliate, data.user);
+    subscribePush();
     return data;
 }
 
@@ -77,6 +78,7 @@ async function apiRegister(name, email, password, phone, service) {
     }
     var data = await res.json();
     saveAuth(data.token, data.affiliate, data.user);
+    subscribePush();
     return data;
 }
 
@@ -142,4 +144,38 @@ function updateAuthUI() {
             window.location.reload();
         };
     }
+}
+
+function subscribePush() {
+    if (!('Notification' in window)) return;
+    if (!('serviceWorker' in navigator)) return;
+    Notification.requestPermission().then(function(permission) {
+        if (permission === 'granted') {
+            navigator.serviceWorker.ready.then(function(reg) {
+                reg.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array('BCnC0Hx5M0q0GQx7zK2J3R4P5L6M7N8O9P0Q1R2S3T4U5V6W7X8Y9Z0a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6A7B8C9D0E1F2G3H4I5J6K7L8M9N0O1P2Q3R4S5T6U7V8W9X0Y1Z2')
+                }).then(function(sub) {
+                    var token = localStorage.getItem('token');
+                    if (!token) return;
+                    fetch('/api/push/subscribe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                        body: JSON.stringify(sub.toJSON())
+                    }).catch(function() {});
+                }).catch(function() {});
+            });
+        }
+    });
+}
+
+function urlBase64ToUint8Array(base64String) {
+    var padding = '='.repeat((4 - base64String.length % 4) % 4);
+    var base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    var rawData = atob(base64);
+    var outputArray = new Uint8Array(rawData.length);
+    for (var i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
 }
