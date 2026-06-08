@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { margin: 0; padding: 0; background-color: #f0f0f0; font-family: Arial, Helvetica, sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; }
+        .header { background: linear-gradient(135deg, #000080, #0000FF); padding: 30px; text-align: center; }
+        .header h1 { color: #FFD700; margin: 0; font-size: 24px; }
+        .content { padding: 30px; color: #333; font-size: 14px; line-height: 1.6; text-align: center; }
+        .btn { display: inline-block; background: #000080; color: #ffffff !important; text-decoration: none; padding: 14px 40px; border-radius: 4px; font-weight: bold; font-size: 16px; }
+        .footer { background: #000080; color: #ffffff; padding: 20px; text-align: center; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>▲ Indique e Ganhe</h1>
+        </div>
+        <div class="content">
+            <h2>Confirme seu email</h2>
+            <p>Clique no botão abaixo para ativar sua conta:</p>
+            <p style="margin: 30px 0;">
+                <a href="{{confirm_link}}" class="btn">CONFIRMAR EMAIL</a>
+            </p>
+            <p style="font-size: 12px; color: #666;">
+                Se não foi você quem se cadastrou, ignore este email.<br>
+                Link alternativo: <a href="{{confirm_link}}">{{confirm_link}}</a>
+            </p>
+        </div>
+        <div class="footer">
+            <p>Indique e Ganhe &copy; 2026</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { margin: 0; padding: 0; background-color: #f0f0f0; font-family: Arial, Helvetica, sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; }
+        .header { background: linear-gradient(135deg, #000080, #0000FF); padding: 30px; text-align: center; }
+        .header h1 { color: #FFD700; margin: 0; font-size: 24px; }
+        .content { padding: 30px; color: #333; font-size: 14px; line-height: 1.6; }
+        .stats { background: #f5f5f5; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e0e0e0; }
+        .stat-label { color: #666; }
+        .stat-value { font-weight: bold; color: #000080; }
+        .btn { display: inline-block; background: #000080; color: #ffffff !important; text-decoration: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; }
+        .footer { background: #000080; color: #ffffff; padding: 20px; text-align: center; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>▲ Indique e Ganhe</h1>
+        </div>
+        <div class="content">
+            <h2>Resumo Mensal, {{name}}!</h2>
+            <p>Aqui está seu desempenho neste período:</p>
+            <div class="stats">
+                <div class="stat-row"><span class="stat-label">Cliques</span><span class="stat-value">{{clicks}}</span></div>
+                <div class="stat-row"><span class="stat-label">Conversões</span><span class="stat-value">{{conversions}}</span></div>
+                <div class="stat-row"><span class="stat-label">Ganhos</span><span class="stat-value">R$ {{earnings}}</span></div>
+                <div class="stat-row"><span class="stat-label">Saldo</span><span class="stat-value">R$ {{balance}}</span></div>
+                <div class="stat-row"><span class="stat-label">Nível</span><span class="stat-value">{{level}}</span></div>
+            </div>
+            <p style="text-align: center;">
+                <a href="{{site_url}}/dashboard.html" class="btn">VER PAINEL COMPLETO</a>
+            </p>
+            <p style="font-size: 12px; color: #666; text-align: center;">
+                Compartilhe seu link: <a href="{{tracking_link}}">{{tracking_link}}</a>
+            </p>
+        </div>
+        <div class="footer">
+            <p>Indique e Ganhe &copy; 2026</p>
+        </div>
+    </div>
+</body>
+</html>
