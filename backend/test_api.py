@@ -1,9 +1,15 @@
-import sys, os, json, tempfile, pytest
+import json
+import os
+import sys
+import tempfile
+
+import pytest
 
 sys.path.insert(0, os.path.dirname(__file__))
 
 # Use a temporary file for test database (in-memory doesn't work with SQLite)
 import database
+
 database.DB_PATH = os.path.join(tempfile.gettempdir(), 'retro_test.db')
 
 # Clean before import
@@ -29,6 +35,7 @@ def _register_user(client, email='user@t.com', password='123456'):
 def _register_admin(client, email='admin@t.com', password='123456'):
     """Register a user, promote to admin, return token."""
     import sqlite3
+
     import database as db_mod
     result = _register_user(client, email, password)
     conn = sqlite3.connect(db_mod.DB_PATH)
@@ -573,7 +580,9 @@ class TestAdminEndpoints:
                          data=json.dumps(data),
                          content_type='application/json')
         result = rv.get_json()
-        import sqlite3, database as db_mod
+        import sqlite3
+
+        import database as db_mod
         conn = sqlite3.connect(db_mod.DB_PATH)
         conn.execute('UPDATE users SET role = ? WHERE email = ?', ('admin', 'admin@test.com'))
         conn.commit()

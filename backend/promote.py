@@ -1,4 +1,6 @@
-import sqlite3, sys
+import sqlite3
+import sys
+
 email = sys.argv[1] if len(sys.argv) > 1 else 'admin@indiqueeganhe.com.br'
 conn = sqlite3.connect('retro.db')
 conn.execute('UPDATE users SET role = ? WHERE email = ?', ('admin', email))

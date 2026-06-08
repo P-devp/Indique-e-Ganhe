@@ -1,10 +1,12 @@
-import sqlite3
+import hashlib
 import os
 import random
-import hashlib
 import secrets
+import sqlite3
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
+from typing import Any
+
+from werkzeug.security import check_password_hash, generate_password_hash
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'retro.db')
 
@@ -16,11 +18,11 @@ LEVEL_THRESHOLDS = [
 ]
 
 
-def _hash_password(password):
+def _hash_password(password: str) -> str:
     return generate_password_hash(password)
 
 
-def _check_password(password, stored):
+def _check_password(password: str, stored: str) -> bool:
     try:
         if check_password_hash(stored, password):
             return True
@@ -32,7 +34,7 @@ def _check_password(password, stored):
     return hashlib.sha256((salt + password).encode()).hexdigest() == h
 
 
-def calculate_level(total_earned):
+def calculate_level(total_earned: float) -> tuple[str, float]:
     name = 'bronze'
     bonus = 0.0
     for n, threshold, b in LEVEL_THRESHOLDS:
@@ -42,16 +44,16 @@ def calculate_level(total_earned):
 
 
 class Database:
-    def __init__(self):
+    def __init__(self) -> None:
         self.init_db()
 
-    def _connect(self):
+    def _connect(self) -> sqlite3.Connection:
         conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA foreign_keys = ON")
         return conn
 
-    def init_db(self):
+    def init_db(self) -> None:
         conn = self._connect()
         conn.executescript('''
             CREATE TABLE IF NOT EXISTS affiliates (
@@ -102,6 +104,36 @@ class Database:
                 approved_by TEXT,
                 FOREIGN KEY (affiliate_code) REFERENCES affiliates(code)
             );
+            CREATE TABLE IF NOT EXISTS push_subscriptions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                affiliate_code TEXT NOT NULL,
+                endpoint TEXT NOT NULL UNIQUE,
+                p256dh TEXT NOT NULL,
+                auth TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (affiliate_code) REFERENCES affiliates(code)
+            );
+            CREATE TABLE IF NOT EXISTS audit_log (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                action TEXT NOT NULL,
+                actor_email TEXT,
+                details TEXT,
+                ip TEXT,
+                created_at TEXT DEFAULT (datetime('now', 'localtime'))
+            );
+            CREATE TABLE IF NOT EXISTS settings (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS timeline (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                affiliate_code TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                description TEXT,
+                amount REAL DEFAULT 0,
+                created_at TEXT DEFAULT (datetime('now', 'localtime')),
+                FOREIGN KEY (affiliate_code) REFERENCES affiliates(code)
+            );
         ''')
         # Migration: add reset_token columns for existing databases
         try:
@@ -117,6 +149,18 @@ class Database:
             conn.execute('ALTER TABLE sessions ADD COLUMN expires_at TEXT')
         except sqlite3.OperationalError:
             pass
+        try:
+            conn.execute("ALTER TABLE users ADD COLUMN confirmed INTEGER DEFAULT 0")
+        except sqlite3.OperationalError:
+            pass
+        try:
+            conn.execute("ALTER TABLE users ADD COLUMN confirm_token TEXT")
+        except sqlite3.OperationalError:
+            pass
+        try:
+            conn.execute("ALTER TABLE affiliates ADD COLUMN commission_rate REAL")
+        except sqlite3.OperationalError:
+            pass
         # Clean expired sessions
         conn.execute("DELETE FROM sessions WHERE expires_at IS NOT NULL AND expires_at <= datetime('now', 'localtime')")
         # Indexes for performance
@@ -126,14 +170,23 @@ class Database:
             conn.execute('CREATE INDEX IF NOT EXISTS idx_payouts_affiliate ON payouts(affiliate_code)')
             conn.execute('CREATE INDEX IF NOT EXISTS idx_goals_affiliate ON goals(affiliate_code, month, year)')
             conn.execute('CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)')
+            conn.execute('CREATE INDEX IF NOT EXISTS idx_audit_log_created ON audit_log(created_at)')
+            conn.execute('CREATE INDEX IF NOT EXISTS idx_timeline_affiliate ON timeline(affiliate_code, created_at)')
         except sqlite3.OperationalError:
             pass
+        # Seed default settings
+        defaults = [
+            ('commission_barbearia', '0.15'),
+            ('commission_lavarapido', '0.10'),
+        ]
+        for k, v in defaults:
+            conn.execute('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', (k, v))
         conn.commit()
         conn.close()
 
     # ── Auth ────────────────────────────────────────────────
 
-    def register_user(self, affiliate_code, email, password, role='affiliate'):
+    def register_user(self, affiliate_code: str, email: str, password: str, role: str = 'affiliate') -> dict[str, Any] | None:
         import re
         if not re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
             return None
@@ -155,7 +208,7 @@ class Database:
         conn.close()
         return self.get_user_by_email(email)
 
-    def get_user_by_email(self, email):
+    def get_user_by_email(self, email: str) -> dict[str, Any] | None:
         conn = self._connect()
         row = conn.execute(
             'SELECT * FROM users WHERE email = ?', (email,)
@@ -163,7 +216,7 @@ class Database:
         conn.close()
         return dict(row) if row else None
 
-    def verify_login(self, email, password):
+    def verify_login(self, email: str, password: str) -> dict[str, Any] | None:
         user = self.get_user_by_email(email)
         if not user:
             return None
@@ -171,7 +224,7 @@ class Database:
             return None
         return user
 
-    def create_session(self, email):
+    def create_session(self, email: str) -> str:
         token = secrets.token_urlsafe(32)
         conn = self._connect()
         conn.execute(
@@ -182,7 +235,7 @@ class Database:
         conn.close()
         return token
 
-    def get_session(self, token):
+    def get_session(self, token: str) -> dict[str, Any] | None:
         conn = self._connect()
         row = conn.execute(
             "SELECT * FROM sessions WHERE token = ? AND (expires_at IS NULL OR expires_at > datetime('now', 'localtime'))",
@@ -194,6 +247,27 @@ class Database:
     def delete_session(self, token):
         conn = self._connect()
         conn.execute('DELETE FROM sessions WHERE token = ?', (token,))
+        conn.commit()
+        conn.close()
+
+    def get_user_sessions(self, email):
+        conn = self._connect()
+        rows = conn.execute(
+            "SELECT token, created_at FROM sessions WHERE email = ? AND (expires_at IS NULL OR expires_at > datetime('now', 'localtime')) ORDER BY created_at DESC",
+            (email,)
+        ).fetchall()
+        conn.close()
+        return [dict(r) for r in rows]
+
+    def delete_session_by_token(self, token):
+        conn = self._connect()
+        conn.execute('DELETE FROM sessions WHERE token = ?', (token,))
+        conn.commit()
+        conn.close()
+
+    def delete_sessions_except(self, email, exclude_token):
+        conn = self._connect()
+        conn.execute("DELETE FROM sessions WHERE email = ? AND token != ?", (email, exclude_token))
         conn.commit()
         conn.close()
 
@@ -299,7 +373,7 @@ class Database:
 
     def update_affiliate(self, code, updates):
         allowed = ['name', 'email', 'phone', 'service',
-                   'clicks', 'conversions', 'earnings', 'balance', 'level']
+                   'clicks', 'conversions', 'earnings', 'balance', 'level', 'commission_rate']
         conn = self._connect()
         for key, value in updates.items():
             if key in allowed:
@@ -334,6 +408,24 @@ class Database:
         conn.execute('DELETE FROM payouts WHERE affiliate_code = ?', (code,))
         conn.commit()
         conn.close()
+
+    def delete_user_account(self, email):
+        user = self.get_user_by_email(email)
+        if not user:
+            return False
+        code = user.get('affiliate_code')
+        conn = self._connect()
+        if code:
+            conn.execute('DELETE FROM goals WHERE affiliate_code = ?', (code,))
+            conn.execute('DELETE FROM payouts WHERE affiliate_code = ?', (code,))
+            conn.execute('DELETE FROM push_subscriptions WHERE affiliate_code = ?', (code,))
+            conn.execute('DELETE FROM timeline WHERE affiliate_code = ?', (code,))
+            conn.execute('DELETE FROM affiliates WHERE code = ?', (code,))
+        conn.execute('DELETE FROM sessions WHERE email = ?', (email,))
+        conn.execute('DELETE FROM users WHERE email = ?', (email,))
+        conn.commit()
+        conn.close()
+        return True
 
     # ── Clicks & Conversions ────────────────────────────────
 
@@ -548,3 +640,150 @@ class Database:
             'conversions': {'current': aff.get('conversions', 0), 'target': cvt, 'progress': min(100, round((aff.get('conversions', 0) / cvt) * 100, 1)) if cvt else 0},
             'earnings': {'current': round(aff.get('earnings', 0), 2), 'target': et, 'progress': min(100, round((aff.get('earnings', 0) / et) * 100, 1)) if et else 0}
         }
+
+def get_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
+
+def save_push_subscription(affiliate_code, endpoint, p256dh, auth):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT OR REPLACE INTO push_subscriptions (affiliate_code, endpoint, p256dh, auth)
+        VALUES (?, ?, ?, ?)
+    """, (affiliate_code, endpoint, p256dh, auth))
+    conn.commit()
+    conn.close()
+
+def get_push_subscriptions(affiliate_code):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT endpoint, p256dh, auth FROM push_subscriptions
+        WHERE affiliate_code = ?
+    """, (affiliate_code,))
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+def get_all_push_subscriptions():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT endpoint, p256dh, auth FROM push_subscriptions
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+# ── Audit Log ──────────────────────────────────────────────
+
+def log_action(action, actor_email=None, details=None, ip=None):
+    conn = get_db()
+    conn.execute(
+        'INSERT INTO audit_log (action, actor_email, details, ip) VALUES (?, ?, ?, ?)',
+        (action, actor_email, details, ip)
+    )
+    conn.commit()
+    conn.close()
+
+def get_audit_log(limit=100, offset=0):
+    conn = get_db()
+    rows = conn.execute(
+        'SELECT * FROM audit_log ORDER BY created_at DESC LIMIT ? OFFSET ?',
+        (limit, offset)
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+# ── Email Confirmation ─────────────────────────────────────
+
+def generate_confirm_token(email):
+    token = secrets.token_urlsafe(32)
+    conn = get_db()
+    conn.execute(
+        'UPDATE users SET confirm_token = ? WHERE email = ?',
+        (token, email)
+    )
+    conn.commit()
+    conn.close()
+    return token
+
+def verify_confirm_token(token):
+    conn = get_db()
+    row = conn.execute(
+        'SELECT * FROM users WHERE confirm_token = ?',
+        (token,)
+    ).fetchone()
+    if not row:
+        conn.close()
+        return None
+    conn.execute(
+        'UPDATE users SET confirmed = 1, confirm_token = NULL WHERE id = ?',
+        (row['id'],)
+    )
+    conn.commit()
+    conn.close()
+    return dict(row)
+
+def is_email_confirmed(email):
+    conn = get_db()
+    row = conn.execute(
+        'SELECT confirmed FROM users WHERE email = ?', (email,)
+    ).fetchone()
+    conn.close()
+    return row and row['confirmed'] == 1
+
+# ── Settings ───────────────────────────────────────────────
+
+def get_setting(key, default=None):
+    conn = get_db()
+    row = conn.execute('SELECT value FROM settings WHERE key = ?', (key,)).fetchone()
+    conn.close()
+    return row['value'] if row else default
+
+def set_setting(key, value):
+    conn = get_db()
+    conn.execute(
+        'INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)',
+        (key, str(value))
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_affiliate_commission(code, default_barbearia=0.15, default_lavarapido=0.10):
+    conn = get_db()
+    row = conn.execute(
+        'SELECT service, commission_rate FROM affiliates WHERE code = ?', (code,)
+    ).fetchone()
+    conn.close()
+    if not row:
+        return default_barbearia
+    rate = row['commission_rate']
+    if rate is not None and rate > 0:
+        return rate
+    service = row['service']
+    return default_barbearia if service in ('barbearia', 'ambos') else default_lavarapido
+
+
+def add_timeline_event(affiliate_code, event_type, description, amount=0):
+    conn = get_db()
+    conn.execute(
+        'INSERT INTO timeline (affiliate_code, event_type, description, amount) VALUES (?, ?, ?, ?)',
+        (affiliate_code, event_type, description, amount)
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_timeline(affiliate_code, limit=50, offset=0):
+    conn = get_db()
+    rows = conn.execute(
+        'SELECT * FROM timeline WHERE affiliate_code = ? ORDER BY created_at DESC LIMIT ? OFFSET ?',
+        (affiliate_code, limit, offset)
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
